@@ -4,6 +4,7 @@ import Filter from "./filter";
 import Personform from "./personform";
 import Persons from "./persons";
 import Header from "./header";
+import Notification from "./notification.js";
 import service from "./services/phoneService.js";
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     service.getAll().then((persons) => {
@@ -47,6 +49,10 @@ const App = () => {
         setPersons(persons.concat(name));
         setNewName("");
         setNewNumber("");
+        setMessage({ text: `${name.name} correctly added`, color: "#00ff00" });
+        setTimeout(() => {
+          setMessage(null);
+        }, 2000);
       });
     }
   };
@@ -65,16 +71,40 @@ const App = () => {
 
   const removeName = (personObject) => {
     if (window.confirm(`Do you really want to delete ${personObject.name}?`)) {
-      service.removeName(personObject.id).then((response) => {
-        console.log(response);
-        setPersons(persons.filter((person) => person.id !== personObject.id));
-      });
+      service
+        .removeName(personObject.id)
+        .then((response) => {
+          console.log(response);
+          setPersons(persons.filter((person) => person.id !== personObject.id));
+          setMessage({
+            text: `${personObject.name} correctly removed`,
+            color: "#00ff00",
+          });
+          setTimeout(() => {
+            setMessage(null);
+          }, 2000);
+        })
+        .catch((error) => {
+          setMessage({
+            text: `${personObject.name} was already removed from server`,
+            color: "#ff0000",
+          });
+          setPersons(persons.filter((person) => person.id !== personObject.id));
+          setTimeout(() => {
+            setMessage(null);
+          }, 2000);
+        });
     }
   };
 
   return (
     <div>
       <Header text="Phonebook" />
+      {message ? (
+        <Notification message={message.text} color={message.color} />
+      ) : (
+        ""
+      )}
       <Filter value={filter} handleFilterChange={handleFilterChange} />
       <Header text="Add new" />
       <Personform
