@@ -45,15 +45,29 @@ const App = () => {
           });
       }
     } else {
-      service.addName(nameObject).then((name) => {
-        setPersons(persons.concat(name));
-        setNewName("");
-        setNewNumber("");
-        setMessage({ text: `${name.name} correctly added`, color: "#00ff00" });
-        setTimeout(() => {
-          setMessage(null);
-        }, 2000);
-      });
+      service
+        .addName(nameObject)
+        .then((name) => {
+          setPersons(persons.concat(name));
+          setNewName("");
+          setNewNumber("");
+          setMessage({
+            text: `${name.name} correctly added`,
+            color: "#00ff00",
+          });
+          setTimeout(() => {
+            setMessage(null);
+          }, 2000);
+        })
+        .catch((error) => {
+          setMessage({
+            text: error.response.data.error,
+            color: "#ff0000",
+          });
+          setTimeout(() => {
+            setMessage(null);
+          }, 2000);
+        });
     }
   };
 
