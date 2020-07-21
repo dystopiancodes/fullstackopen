@@ -100,13 +100,11 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.name);
-
   if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
+    return response.status(400).send({ error: "Malformatted id" });
   }
   if (error.name === "ValidationError") {
-    return response.status(400).send({ error: "Name must be unique" });
+    return response.status(400).send({ error: error.message });
   }
 
   next(error);
