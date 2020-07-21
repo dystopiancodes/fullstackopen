@@ -1,7 +1,7 @@
 {
-  "name": "phonebook-server",
+  "name": "blog-backend",
   "version": "1.0.0",
-  "description": "phonebook api",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
